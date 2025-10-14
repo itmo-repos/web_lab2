@@ -1,0 +1,44 @@
+package com.lab2.model;
+import java.math.BigDecimal;
+
+public class RequestResult {
+    private final String date;
+    private final double executionTime;
+    private final boolean hit;
+    private final int x;
+    private final BigDecimal y;
+    private final int r;
+    
+    public RequestResult(String date, double executionTime, boolean hit, int x, BigDecimal y, int r) {
+        this.date = date;
+        this.executionTime = executionTime;
+        this.hit = hit;
+        this.x = x;
+        this.y = y;
+        this.r = r;
+    }
+    
+    public String getDate() { 
+        return date; 
+    }
+    
+    public double getExecutionTime() { 
+        return executionTime;
+    }
+
+    public boolean isHit() { 
+        return hit;
+    }
+
+    public int getX() {
+        return x; 
+    }
+
+    public BigDecimal getY() { 
+        return y;
+    }
+
+    public int getR() {
+        return r;
+    }
+}

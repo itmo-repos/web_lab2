@@ -1,0 +1,25 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = 'com.example'
+version = '1.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    providedCompile 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    providedCompile 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.0'
+}
+
+tasks.named('war') {
+    archiveFileName = 'PingApp.war'
+}

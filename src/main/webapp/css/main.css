@@ -1,0 +1,71 @@
+.main-table {
+  max-width: 1200px;
+  margin: 0 auto;
+  border: none;
+}
+
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.results-table th,
+.results-table td {
+  border: 1px solid #000;
+  padding: 3px;
+  text-align: center;
+}
+
+.results-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.results-table input[type="checkbox"] {
+  pointer-events: none;
+  cursor: default;
+}
+
+.y_error {
+  color: red;
+  font-size: 14px;
+}
+
+.table-container {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 2px solid #000;
+  border-radius: 8px;
+}
+
+/* Стили для графика */
+.svg-chart {
+  border: 2px solid #8e8e8e;
+  border-radius: 12px;
+}
+
+/* Стили для подписей */
+strong {
+  font-size: 19px;
+  font-weight: bold;
+}
+
+/* Стили для полей формы */
+select, input[type="text"], input[type="number"] {
+  border: 2px solid #000;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 14px;
+}
+
+
+.page-header {
+  font-family: sans-serif;
+  color: #0d003c;
+  font-size: 35px;
+  padding-bottom: 20px;
+}

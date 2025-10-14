@@ -1,0 +1,35 @@
+.y-axis-label {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  fill: black;
+  dominant-baseline: middle;
+  text-anchor: start;
+}
+
+.x-axis-label {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  fill: black;
+  dominant-baseline: text-after-edge;
+  text-anchor: middle;
+}
+
+.axis-label {
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+  fill: rgb(0, 0, 0);
+  dominant-baseline: middle;
+  text-anchor: middle;
+}
+
+.graph-body {
+  fill: #3399ff;
+}
+
+.r-value {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  fill: black;
+  dominant-baseline: text-before-edge;
+  text-anchor: start;
+}
