@@ -12,17 +12,15 @@ public class HitCalculator {
     private HitCalculator() {
     }
 
-    public static boolean checkHit(int x, BigDecimal yBD, BigDecimal rBD) {
-        BigDecimal xBD = new BigDecimal(x, MATH_CONTEXT);
-        BigDecimal zero = BigDecimal.ZERO;
+    public static boolean checkHit(BigDecimal xBD, BigDecimal yBD, BigDecimal rBD) {
         BigDecimal half = new BigDecimal("0.5", MATH_CONTEXT);
         
-        if (x >= 0 && yBD.compareTo(zero) >= 0) {
+        if (xBD.signum() >= 0 && yBD.signum() >= 0) {
             // Первая четверть
             BigDecimal rHalf = rBD.multiply(half, MATH_CONTEXT);
             
             return xBD.compareTo(rHalf) <= 0 && yBD.compareTo(rBD) <= 0;
-        } else if (x <= 0 && yBD.compareTo(zero) >= 0) {
+        } else if (xBD.signum() <= 0 && yBD.signum() >= 0) {
             // Вторая четверть
             BigDecimal rHalf = rBD.multiply(half, MATH_CONTEXT);
             BigDecimal negX = xBD.negate();
@@ -30,7 +28,7 @@ public class HitCalculator {
             BigDecimal maxY = rHalf.subtract(negX.multiply(half, MATH_CONTEXT), MATH_CONTEXT);
 
             return yBD.compareTo(maxY) <= 0;
-        } else if (x <= 0 && yBD.compareTo(zero) <= 0) {
+        } else if (xBD.signum() <= 0 && yBD.signum() <= 0) {
             // Третья четверть
             BigDecimal xSquared = xBD.multiply(xBD, MATH_CONTEXT);
             BigDecimal ySquared = yBD.multiply(yBD, MATH_CONTEXT);

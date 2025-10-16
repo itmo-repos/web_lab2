@@ -13,7 +13,7 @@ public class HtmlGenerator {
     public static String generateResultPage(RequestResult result) {
         StringBuilder html = new StringBuilder();
 
-        int x = result.getX();
+        BigDecimal x = result.getX();
         BigDecimal y = result.getY();
         BigDecimal r = result.getR();
         double executionTime = result.getExecutionTime();
@@ -41,7 +41,7 @@ public class HtmlGenerator {
         html.append("            <tbody>\n");
         html.append("                <tr>\n");
         html.append("                    <td>X</td>\n");
-        html.append("                    <td class=\"result-value\">").append(x).append("</td>\n");
+        html.append("                    <td class=\"result-value\">").append(x.setScale(3, RoundingMode.HALF_UP)).append("</td>\n");
         html.append("                </tr>\n");
         html.append("                <tr>\n");
         html.append("                    <td>Y</td>\n");

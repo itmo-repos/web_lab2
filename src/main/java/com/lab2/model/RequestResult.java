@@ -5,11 +5,11 @@ public class RequestResult {
     private final String date;
     private final double executionTime;
     private final boolean hit;
-    private final int x;
+    private final BigDecimal x;
     private final BigDecimal y;
     private final BigDecimal r;
     
-    public RequestResult(String date, double executionTime, boolean hit, int x, BigDecimal y, BigDecimal r) {
+    public RequestResult(String date, double executionTime, boolean hit, BigDecimal x, BigDecimal y, BigDecimal r) {
         this.date = date;
         this.executionTime = executionTime;
         this.hit = hit;
@@ -30,7 +30,7 @@ public class RequestResult {
         return hit;
     }
 
-    public int getX() {
+    public BigDecimal getX() {
         return x; 
     }
 

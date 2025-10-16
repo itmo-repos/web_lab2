@@ -101,7 +101,7 @@ public class DatabaseManager {
             String date = parts[0];
             double executionTime = Double.parseDouble(parts[1]);
             boolean hit = Boolean.parseBoolean(parts[2]);
-            int x = Integer.parseInt(parts[3]);
+            BigDecimal x = new BigDecimal(parts[3], MATH_CONTEXT);
             BigDecimal y = new BigDecimal(parts[4], MATH_CONTEXT);
             BigDecimal r = new BigDecimal(parts[5], MATH_CONTEXT);
             
@@ -116,7 +116,7 @@ public class DatabaseManager {
             result.getDate(),
             result.getExecutionTime(),
             result.isHit(),
-            result.getX(),
+            result.getX().toPlainString(),
             result.getY().toPlainString(),
             result.getR().toPlainString()
         );
