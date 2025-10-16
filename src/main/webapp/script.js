@@ -199,8 +199,8 @@ if (mainForm) {
         }
         
         clearFormError();
-        
-        showFormError('Ошибка при выполнении запроса');
 
+        e.target.submit();
+        
     });
 }

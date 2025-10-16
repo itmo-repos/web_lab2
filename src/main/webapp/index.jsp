@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Lab1</title>
+    <title>Lab2</title>
     <link rel="stylesheet" href="css/chart.css">
     <link rel="stylesheet" href="css/main.css">
 </head>
@@ -19,7 +19,7 @@
         <tr>
             <td width="60%" valign="top">
                 <svg width="600" height="600" viewBox="-5 -5 310 310" class="svg-chart">
-                    <text x="5" y="5" fill="black" class="r-value">R = 1</text>
+                    <text x="5" y="5" fill="black" class="r-value">R = ?</text>
 
                     <!-- body -->
 
@@ -68,7 +68,7 @@
                 <tr>
                     <td width="40%">
                         <!-- Таблица установщиков X, Y, R с тремя строками -->
-                        <form id="main_form" action="check" method="GET">
+                        <form id="main_form" action="/main" method="POST">
                             <table border="0" cellpadding="5" cellspacing="0">
                                             <tr>
                                                 <td>

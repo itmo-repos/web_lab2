@@ -7,9 +7,9 @@ public class RequestResult {
     private final boolean hit;
     private final int x;
     private final BigDecimal y;
-    private final int r;
+    private final BigDecimal r;
     
-    public RequestResult(String date, double executionTime, boolean hit, int x, BigDecimal y, int r) {
+    public RequestResult(String date, double executionTime, boolean hit, int x, BigDecimal y, BigDecimal r) {
         this.date = date;
         this.executionTime = executionTime;
         this.hit = hit;
@@ -38,7 +38,7 @@ public class RequestResult {
         return y;
     }
 
-    public int getR() {
+    public BigDecimal getR() {
         return r;
     }
 }

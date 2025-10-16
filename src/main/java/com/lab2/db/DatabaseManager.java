@@ -15,6 +15,12 @@ public class DatabaseManager {
     
     // Используем тот же MathContext, что и в Main.java
     private static final MathContext MATH_CONTEXT = new MathContext(50);
+
+    public static void addResult(RequestResult result) {
+        List<RequestResult> results = loadTable();
+        results.add(result);
+        saveTable(results);
+    }
     
     public static List<RequestResult> loadTable() {
         try {
@@ -52,10 +58,6 @@ public class DatabaseManager {
         }
     }
     
-    /**
-     * Сохраняет таблицу результатов в файл
-     * @param results список результатов для сохранения
-     */
     public static void saveTable(List<RequestResult> results) {
         if (results == null) {
             return;
@@ -101,7 +103,7 @@ public class DatabaseManager {
             boolean hit = Boolean.parseBoolean(parts[2]);
             int x = Integer.parseInt(parts[3]);
             BigDecimal y = new BigDecimal(parts[4], MATH_CONTEXT);
-            int r = Integer.parseInt(parts[5]);
+            BigDecimal r = new BigDecimal(parts[5], MATH_CONTEXT);
             
             return new RequestResult(date, executionTime, hit, x, y, r);
         } catch (NumberFormatException e) {
@@ -110,13 +112,13 @@ public class DatabaseManager {
     }
     
     private static String formatResultToLine(RequestResult result) {
-        return String.format(java.util.Locale.US, "%s|%.2f|%s|%d|%s|%d",
+        return String.format(java.util.Locale.US, "%s|%.2f|%s|%d|%s|%s",
             result.getDate(),
             result.getExecutionTime(),
             result.isHit(),
             result.getX(),
             result.getY().toPlainString(),
-            result.getR()
+            result.getR().toPlainString()
         );
     }
 }

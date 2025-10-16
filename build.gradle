@@ -3,7 +3,7 @@ plugins {
     id 'war'
 }
 
-group = 'com.example'
+group = 'com.lab2'
 version = '1.0'
 
 java {
@@ -21,5 +21,5 @@ dependencies {
 }
 
 tasks.named('war') {
-    archiveFileName = 'PingApp.war'
+    archiveFileName = 'ROOT.war'
 }

@@ -8,13 +8,14 @@ import jakarta.servlet.ServletException;
 import java.io.IOException;
 
 import java.math.BigDecimal;
-import com.lab2.model.HitCalculator;
 
-
-@WebServlet("/")
+@WebServlet("/main")
 public class ControllerServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        long startTime = System.nanoTime();
+
+
         String x = req.getParameter("x_value");
         String y = req.getParameter("y_value");
         String r = req.getParameter("r_value");
@@ -26,36 +27,23 @@ public class ControllerServlet extends HttpServlet {
 
         try {
             int xInt = Integer.parseInt(x);
-            BigDecimal yBigDecimal = new BigDecimal(y);
-            BigDecimal rBigDecimal = new BigDecimal(r);
+            BigDecimal yBD = new BigDecimal(y);
+            BigDecimal rBD = new BigDecimal(r);
 
-            if (yBigDecimal.compareTo(new BigDecimal("-3")) < 0 || yBigDecimal.compareTo(new BigDecimal("5")) > 0) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write("Y должно быть числом от -3 до 5");
-                return;
-            }
+            req.setAttribute("x", xInt);
+            req.setAttribute("y", yBD);
+            req.setAttribute("r", rBD);
+            req.setAttribute("startTime", startTime);
 
-            if (rBigDecimal.compareTo(new BigDecimal("1")) < 0 || rBigDecimal.compareTo(new BigDecimal("3")) > 0) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write("R должно быть числом от 1 до 3");
-                return;
-            }
-
-            if (xInt < -4 || xInt > 4) {
-                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                resp.getWriter().write("X должно быть числом от -4 до 4");
-                return;
-            }
-
-            boolean hit = HitCalculator.checkHit(xInt, yBigDecimal, rBigDecimal);
-
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.getWriter().write(hit ? "true" : "false");
+            req.getRequestDispatcher("/check").forward(req, resp);
         } catch (NumberFormatException e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write("X, Y и R должны быть числами");
+            req.getRequestDispatcher("/index.jsp").forward(req, resp);
         }
-        
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        doGet(req, resp);
+    }
+
 }
