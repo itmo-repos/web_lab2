@@ -115,6 +115,13 @@ document.addEventListener('DOMContentLoaded', function() {
         clearButton.addEventListener('click', function() {
             if (confirm('Вы уверены, что хотите очистить таблицу?')) {
                 clearTable();
+                fetch('/clear', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                })
+                .then(response => response.text())
             }
         });
     }

@@ -58,7 +58,7 @@ public class HtmlGenerator {
         html.append("                <tr>\n");
         html.append("                    <td>Результат</td>\n");
         html.append("                    <td class=\"hit-result ").append(hit ? "hit-true" : "hit-false").append("\">");
-        html.append(hit ? "ПОПАДАНИЕ" : "НЕ ПОПАДАНИЕ");
+        html.append(hit ? "ПОПАДАНИЕ" : "ПРОМАХ");
         html.append("                    </td>\n");
         html.append("                </tr>\n");
         html.append("            </tbody>\n");
@@ -66,7 +66,7 @@ public class HtmlGenerator {
         
         // Ссылка на главную страницу
         html.append("        <div class=\"link-container\">\n");
-        html.append("            <a href=\"/\" class=\"back-link\">Вернуться к форме</a>\n");
+        html.append("            <a href=\"/main\" class=\"back-link\">Вернуться к форме</a>\n");
         html.append("        </div>\n");
         
         html.append("    </div>\n");

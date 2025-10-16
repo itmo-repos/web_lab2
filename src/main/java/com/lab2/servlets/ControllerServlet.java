@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import java.io.IOException;
 
 import java.math.BigDecimal;
+import com.lab2.db.DatabaseManager;
 
 @WebServlet("/main")
 public class ControllerServlet extends HttpServlet {
@@ -19,6 +20,8 @@ public class ControllerServlet extends HttpServlet {
         String x = req.getParameter("x_value");
         String y = req.getParameter("y_value");
         String r = req.getParameter("r_value");
+
+        req.setAttribute("results_collection", DatabaseManager.loadTable());
 
         if (x == null || y == null || r == null) {
             req.getRequestDispatcher("/index.jsp").forward(req, resp);

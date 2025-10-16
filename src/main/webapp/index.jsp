@@ -1,4 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.lab2.model.RequestResult" %>
+<%@ page import="jakarta.servlet.RequestDispatcher" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%
+    // Проверяем, был ли запрос перенаправлен через forward
+    if (request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI) == null) {
+        response.sendRedirect("/main");
+        return;
+    }
+%>
 
 <!DOCTYPE html>
 <html>
@@ -7,6 +19,7 @@
     <title>Lab2</title>
     <link rel="stylesheet" href="css/chart.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/result_page.css">
 </head>
 <body>
     <table cellpadding="0" cellspacing="0" width="100%" class="main-table">
@@ -136,6 +149,26 @@
                                 </thead>
                                 <tbody>
                                     <!-- Строки с результатами -->
+                                    
+                                    <c:forEach var="result" items="${results_collection}">
+                                        <tr>
+                                            <td>${result.date}</td>
+                                            <td>${result.executionTime} мс</td>
+                                            <td class="result-cell">
+                                                <c:choose>
+                                                    <c:when test="${result.hit}">
+                                                        <input type="checkbox" checked class="result-checkbox hit-checkbox">
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <input type="checkbox" class="result-checkbox miss-checkbox">
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>${result.x}</td>
+                                            <td>${result.y}</td>
+                                            <td>${result.r}</td>
+                                        </tr>
+                                    </c:forEach>
                                 </tbody>
                             </table>
                         </div>

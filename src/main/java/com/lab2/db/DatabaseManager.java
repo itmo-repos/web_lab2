@@ -9,7 +9,7 @@ import java.math.MathContext;
 import com.lab2.model.RequestResult;
 
 public class DatabaseManager {
-    private static final String DB_DIR = "db";
+    private static final String DB_DIR = "/home/studs/s467669/lab2/db";
     private static final String TABLE_FILE = "table.txt";
     private static final String FILE_PATH = DB_DIR + "/" + TABLE_FILE;
     

@@ -5,8 +5,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import java.math.BigDecimal;
 import com.lab2.model.HitCalculator;
@@ -64,7 +66,13 @@ public class AreaCheckServlet extends HttpServlet {
     }
     
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {        
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        // Проверяем, был ли запрос перенаправлен через forward
+        if (req.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI) == null) {
+            resp.sendError(404);
+            return;
+        }
+        
         BigDecimal yBD;
         BigDecimal rBD;
         int xInt;
@@ -97,7 +105,8 @@ public class AreaCheckServlet extends HttpServlet {
         boolean hit = HitCalculator.checkHit(xInt, yBD, rBD);
         long endTime = System.nanoTime();
 
-        RequestResult result = new RequestResult(new Date().toString(), (endTime - startTime) / 1000.0, hit, xInt, yBD, rBD);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        RequestResult result = new RequestResult(dateFormat.format(new Date()), (endTime - startTime) / 1000.0, hit, xInt, yBD, rBD);
         DatabaseManager.addResult(result);
 
         String htmlPage = HtmlGenerator.generateResultPage(result);

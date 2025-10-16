@@ -77,3 +77,13 @@
 .link-container {
   text-align: center;
 }
+
+/* Стили для результатов в таблице */
+.result-cell {
+  text-align: center;
+}
+
+.results-table input[type="checkbox"] {
+  pointer-events: none;
+  cursor: default;
+}
