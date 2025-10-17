@@ -8,10 +8,11 @@ import jakarta.servlet.ServletException;
 import java.io.IOException;
 
 import java.math.BigDecimal;
-import com.lab2.db.DatabaseManager;
 
 @WebServlet("/main")
 public class ControllerServlet extends HttpServlet {
+
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         long startTime = System.nanoTime();
@@ -21,19 +22,17 @@ public class ControllerServlet extends HttpServlet {
         String y = req.getParameter("y_value");
         String r = req.getParameter("r_value");
 
-        req.setAttribute("results_collection", DatabaseManager.loadTable());
-
         if (x == null || y == null || r == null) {
             req.getRequestDispatcher("/index.jsp").forward(req, resp);
             return;
         }
 
         try {
-            int xInt = Integer.parseInt(x);
+            BigDecimal xBD = new BigDecimal(x);
             BigDecimal yBD = new BigDecimal(y);
             BigDecimal rBD = new BigDecimal(r);
 
-            req.setAttribute("x", xInt);
+            req.setAttribute("x", xBD);
             req.setAttribute("y", yBD);
             req.setAttribute("r", rBD);
             req.setAttribute("startTime", startTime);

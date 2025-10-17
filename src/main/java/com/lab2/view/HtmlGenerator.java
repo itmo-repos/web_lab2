@@ -13,6 +13,7 @@ public class HtmlGenerator {
     public static String generateResultPage(RequestResult result) {
         StringBuilder html = new StringBuilder();
 
+        String date = result.getDate();
         BigDecimal x = result.getX();
         BigDecimal y = result.getY();
         BigDecimal r = result.getR();
@@ -40,16 +41,20 @@ public class HtmlGenerator {
         html.append("            </thead>\n");
         html.append("            <tbody>\n");
         html.append("                <tr>\n");
+        html.append("                    <td>Дата</td>\n");
+        html.append("                    <td class=\"result-value\">").append(date).append("</td>\n");
+        html.append("                </tr>\n");
+        html.append("                <tr>\n");
         html.append("                    <td>X</td>\n");
-        html.append("                    <td class=\"result-value\">").append(x.setScale(3, RoundingMode.HALF_UP)).append("</td>\n");
+        html.append("                    <td class=\"result-value\">").append(x.setScale(2, RoundingMode.HALF_UP)).append("</td>\n");
         html.append("                </tr>\n");
         html.append("                <tr>\n");
         html.append("                    <td>Y</td>\n");
-        html.append("                    <td class=\"result-value\">").append(y.setScale(3, RoundingMode.HALF_UP)).append("</td>\n");
+        html.append("                    <td class=\"result-value\">").append(y.setScale(2, RoundingMode.HALF_UP)).append("</td>\n");
         html.append("                </tr>\n");
         html.append("                <tr>\n");
         html.append("                    <td>R</td>\n");
-        html.append("                    <td class=\"result-value\">").append(r.setScale(3, RoundingMode.HALF_UP)).append("</td>\n");
+        html.append("                    <td class=\"result-value\">").append(r.setScale(1, RoundingMode.HALF_UP)).append("</td>\n");
         html.append("                </tr>\n");
         html.append("                <tr>\n");
         html.append("                    <td>Время выполнения</td>\n");

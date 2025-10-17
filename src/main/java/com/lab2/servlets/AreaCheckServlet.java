@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.ServletException;
+import jakarta.inject.Inject;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.util.Date;
@@ -13,8 +14,8 @@ import java.text.SimpleDateFormat;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import com.lab2.model.HitCalculator;
-import com.lab2.db.DatabaseManager;
 import com.lab2.model.RequestResult;
+import com.lab2.model.ResultsCollectionBean;
 import com.lab2.view.HtmlGenerator;
 
 
@@ -24,9 +25,12 @@ public class AreaCheckServlet extends HttpServlet {
 
     private static final MathContext MATH_CONTEXT = new MathContext(50);
 
+    @Inject
+    private ResultsCollectionBean resultsCollection;
+
     private boolean validateParameters(BigDecimal yBD, BigDecimal rBD, BigDecimal xBD, HttpServletResponse resp) {
-        if (xBD.abs(MATH_CONTEXT).compareTo(rBD) > 0) {
-            String errorPage = HtmlGenerator.generateErrorPage("Ошибка валидации", "X не должно превышать R");
+        if (xBD.abs(MATH_CONTEXT).compareTo(new BigDecimal("6.0", MATH_CONTEXT)) > 0) {
+            String errorPage = HtmlGenerator.generateErrorPage("Ошибка валидации", "X не должно превышать 6");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.setContentType("text/html; charset=UTF-8");
             resp.setCharacterEncoding("UTF-8");
@@ -38,8 +42,8 @@ public class AreaCheckServlet extends HttpServlet {
             return false;
         }
 
-        if (yBD.abs(MATH_CONTEXT).subtract(rBD.multiply(new BigDecimal("1.5", MATH_CONTEXT), MATH_CONTEXT)).signum() > 0) {
-            String errorPage = HtmlGenerator.generateErrorPage("Ошибка валидации", "Y не должно превышать 1.5R");
+        if (yBD.abs(MATH_CONTEXT).compareTo(new BigDecimal("6.0", MATH_CONTEXT)) > 0) {
+            String errorPage = HtmlGenerator.generateErrorPage("Ошибка валидации", "Y не должно превышать 6");
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.setContentType("text/html; charset=UTF-8");
             resp.setCharacterEncoding("UTF-8");
@@ -109,7 +113,7 @@ public class AreaCheckServlet extends HttpServlet {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
         RequestResult result = new RequestResult(dateFormat.format(new Date()), (endTime - startTime) / 1000.0, hit, xBD, yBD, rBD);
-        DatabaseManager.addResult(result);
+        resultsCollection.addResult(result);
 
         String htmlPage = HtmlGenerator.generateResultPage(result);
         resp.setContentType("text/html; charset=UTF-8");

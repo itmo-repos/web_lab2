@@ -2,6 +2,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.lab2.model.RequestResult" %>
 <%@ page import="jakarta.servlet.RequestDispatcher" %>
+<%@ page import="java.math.RoundingMode" %>
+<%@ page import="java.math.BigDecimal" %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
@@ -31,7 +34,7 @@
         </tr>
         <tr>
             <td width="60%" valign="top">
-                <svg width="600" height="600" viewBox="-5 -5 310 310" class="svg-chart">
+                <svg width="600" height="600" viewBox="-5 -5 310 310" class="svg-chart" id="svg-chart">
                     <text x="5" y="5" fill="black" class="r-value">R = ?</text>
 
                     <!-- body -->
@@ -150,10 +153,10 @@
                                 <tbody>
                                     <!-- Строки с результатами -->
                                     
-                                    <c:forEach var="result" items="${results_collection}">
+                                    <c:forEach var="result" items="${results_collection.results}">
                                         <tr>
                                             <td>${result.date}</td>
-                                            <td>${result.executionTime} мс</td>
+                                            <td>${result.executionTime} мкс</td>
                                             <td class="result-cell">
                                                 <c:choose>
                                                     <c:when test="${result.hit}">
@@ -164,9 +167,9 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>
-                                            <td>${result.x}</td>
-                                            <td>${result.y}</td>
-                                            <td>${result.r}</td>
+                                            <td>${result.x.setScale(2, RoundingMode.HALF_UP)}</td>
+                                            <td>${result.y.setScale(2, RoundingMode.HALF_UP)}</td>
+                                            <td>${result.r.setScale(1, RoundingMode.HALF_UP)}</td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
@@ -176,7 +179,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input type="button" id="clear_table" value="Очистить таблицу"/>
+                        <input type="button" id="clear_points" value="Удалить все точки"/>
                     </td>
                 </tr>
             </table>

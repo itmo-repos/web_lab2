@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 import com.lab2.model.RequestResult;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DatabaseManager {
     private static final String DB_DIR = "/home/studs/s467669/lab2/db";
@@ -16,22 +17,36 @@ public class DatabaseManager {
     // Используем тот же MathContext, что и в Main.java
     private static final MathContext MATH_CONTEXT = new MathContext(50);
 
-    public static void addResult(RequestResult result) {
-        List<RequestResult> results = loadTable();
-        results.add(result);
-        saveTable(results);
+    public static synchronized void addResult(RequestResult result) {
+        if (result == null) {
+            return;
+        }
+
+        try {
+            // Создаем директорию, если её нет
+            checkDir();
+            
+            Path filePath = Paths.get(FILE_PATH);
+            
+            try (BufferedWriter writer = Files.newBufferedWriter(filePath, StandardOpenOption.CREATE, StandardOpenOption.APPEND)) {
+                String line = formatResultToLine(result);
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+        }
     }
     
-    public static List<RequestResult> loadTable() {
+    public static synchronized List<RequestResult> loadResults() {
         try {
             checkDir();
             
             Path filePath = Paths.get(FILE_PATH);
             if (!Files.exists(filePath)) {
-                return new ArrayList<>();
+                return new CopyOnWriteArrayList<RequestResult>();
             }
             
-            List<RequestResult> results = new ArrayList<>();
+            List<RequestResult> results = new ArrayList<RequestResult>();
             
             try (BufferedReader reader = Files.newBufferedReader(filePath)) {
                 String line;
@@ -51,14 +66,14 @@ public class DatabaseManager {
                 }
             }
             
-            return results;
+            return new CopyOnWriteArrayList<RequestResult>(results);
             
         } catch (IOException e) {
-            return new ArrayList<>();
+            return new CopyOnWriteArrayList<RequestResult>();
         }
     }
     
-    public static void saveTable(List<RequestResult> results) {
+    public static synchronized void saveResults(List<RequestResult> results) {
         if (results == null) {
             return;
         }
@@ -81,7 +96,7 @@ public class DatabaseManager {
         }
     }
     
-    private static void checkDir() {
+    private static synchronized void checkDir() {
         try {
             Path dbDir = Paths.get(DB_DIR);
             if (!Files.exists(dbDir)) {
@@ -91,7 +106,7 @@ public class DatabaseManager {
         }
     }
     
-    private static RequestResult parseResultFromLine(String line) {
+    private static synchronized RequestResult parseResultFromLine(String line) {
         String[] parts = line.split("\\|");
         if (parts.length != 6) {
             return null;
@@ -111,8 +126,8 @@ public class DatabaseManager {
         }
     }
     
-    private static String formatResultToLine(RequestResult result) {
-        return String.format(java.util.Locale.US, "%s|%.2f|%s|%d|%s|%s",
+    private static synchronized String formatResultToLine(RequestResult result) {
+        return String.format(java.util.Locale.US, "%s|%.2f|%s|%s|%s|%s",
             result.getDate(),
             result.getExecutionTime(),
             result.isHit(),

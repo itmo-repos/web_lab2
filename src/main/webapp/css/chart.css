@@ -4,6 +4,7 @@
   fill: black;
   dominant-baseline: middle;
   text-anchor: start;
+  user-select: none;
 }
 
 .x-axis-label {
@@ -12,6 +13,7 @@
   fill: black;
   dominant-baseline: text-after-edge;
   text-anchor: middle;
+  user-select: none;
 }
 
 .axis-label {
@@ -20,6 +22,7 @@
   fill: rgb(0, 0, 0);
   dominant-baseline: middle;
   text-anchor: middle;
+  user-select: none;
 }
 
 .graph-body {
@@ -32,4 +35,5 @@
   fill: black;
   dominant-baseline: text-before-edge;
   text-anchor: start;
+  user-select: none;
 }

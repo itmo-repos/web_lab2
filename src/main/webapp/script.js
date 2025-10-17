@@ -1,4 +1,3 @@
-
 function updateRValue(rValue) {
     localStorage.setItem("r_value", rValue);
     const rText = document.querySelector('.r-value');
@@ -8,6 +7,32 @@ function updateRValue(rValue) {
         } else {
             rText.textContent = 'R = ?';
         }
+    }
+}
+
+function redrawChart() {
+    const svg = document.getElementById("svg-chart");
+    if (svg) {
+        const rValue = localStorage.getItem("r_value");
+        if (!rValue) {
+            return;
+        }
+
+        fetch('/getPoints')
+            .then(response => response.json())
+            .then(points => {
+                clearPoints();
+                
+                points.forEach((point_data) => {
+                    const point = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    point.setAttribute("cx", point_data.x/rValue*120.0 + 150);
+                    point.setAttribute("cy", 150 - point_data.y/rValue*120.0);
+                    point.setAttribute("r", "2");
+                    point.setAttribute("class", point_data.hit ? "point-hit" : "point-miss");
+                    svg.appendChild(point);
+                });
+            })
+            .catch(err => console.error('Ошибка загрузки точек:', err));
     }
 }
 
@@ -44,6 +69,11 @@ function showYValueError(yRow, text) {
 function addResultRow(date, executionTime, hit, x, y, r) {
     const tbody = document.querySelector('.results-table tbody');
     if (tbody) {
+        // Проверяем, был ли пользователь внизу таблицы
+        const tableContainer = tbody.closest('.table-container');
+        const wasAtBottom = tableContainer && 
+            (tableContainer.scrollTop + tableContainer.clientHeight >= tableContainer.scrollHeight - 10);
+        
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>${date}</td>
@@ -54,6 +84,11 @@ function addResultRow(date, executionTime, hit, x, y, r) {
             <td>${r}</td>
         `;
         tbody.appendChild(row);
+        
+        // Прокручиваем к концу, если пользователь был внизу
+        if (wasAtBottom && tableContainer) {
+            tableContainer.scrollTop = tableContainer.scrollHeight;
+        }
     }
 }
 
@@ -64,17 +99,92 @@ function clearTable() {
     }
 }
 
+function clearPoints() {
+    const svg = document.getElementById("svg-chart");
+    if (svg) {
+        const points = svg.querySelectorAll('circle');
+        points.forEach(point => {
+            point.remove();
+        });
+    }
+}
 
-document.addEventListener('DOMContentLoaded', function() {
+
+function parseHtmlResult(htmlResponse) {
+    try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlResponse, 'text/html');
+        
+        const resultTable = doc.querySelector('.result-table tbody');
+        if (!resultTable) {
+            console.error('Не удалось найти таблицу результата в HTML ответе');
+            return null;
+        }
+        
+        const rows = resultTable.querySelectorAll('tr');
+        const result = {};
+        
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length >= 2) {
+                const parameter = cells[0].textContent.trim();
+                const value = cells[1].textContent.trim();
+                
+                switch (parameter) {
+                    case 'Дата':
+                        result.date = value;
+                        break;
+                    case 'X':
+                        result.x = value;
+                        break;
+                    case 'Y':
+                        result.y = value;
+                        break;
+                    case 'R':
+                        result.r = value;
+                        break;
+                    case 'Время выполнения':
+                        result.executionTime = parseFloat(value.replace(' мкс', ''));
+                        break;
+                    case 'Результат':
+                        result.hit = value === 'ПОПАДАНИЕ';
+                        break;
+                }
+            }
+        });
+        
+        return result;
+    } catch (error) {
+        console.error('Ошибка при парсинге HTML ответа:', error);
+        return null;
+    }
+}
+
+function showResult(htmlResponse) {
+    const result = parseHtmlResult(htmlResponse);
+    if (result && result.date && result.x && result.y && result.r && result.executionTime !== undefined) {
+        const svg = document.getElementById("svg-chart");
+        const point = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+
+        point.setAttribute("cx", result.x/result.r*120.0 + 150);
+        point.setAttribute("cy", 150 - result.y/result.r*120.0);
+        point.setAttribute("r", "2");
+        point.setAttribute("class", result.hit ? "point-hit" : "point-miss");
+
+        svg.appendChild(point);
+
+        addResultRow(result.date, result.executionTime, result.hit, result.x, result.y, result.r);
+    } else {
+        console.error('Не удалось извлечь данные результата из HTML ответа');
+    }
+}
+
+function loadRValue () {
     const r = localStorage.getItem("r_value");
-    const x = localStorage.getItem("x_value");
     const rSelect = document.getElementById('r_value');
-    const xSelect = document.getElementById('x_value');
-    
+
     // Список валидных значений для R
     const validRValues = ['1.0', '1.5', '2.0', '2.5', '3.0'];
-    // Список валидных значений для X
-    const validXValues = ['-4', '-3', '-2', '-1', '0', '1', '2', '3', '4'];
 
     // Проверка и восстановление значения R
     if (r === null || r === '' || !validRValues.includes(r)) {
@@ -94,27 +204,20 @@ document.addEventListener('DOMContentLoaded', function() {
         updateRValue(r);
         document.getElementById('r_value').value = r;
     }
+}
 
-    // Проверка и восстановление значения X
-    if (x === null || x === '' || !validXValues.includes(x)) {
-        if (xSelect) {
-            xSelect.value = '';
-        }
-        // Очищаем невалидное значение из localStorage
-        if (x !== null && x !== '' && !validXValues.includes(x)) {
-            localStorage.removeItem("x_value");
-        }
-    } else {
-        if (xSelect) {
-            xSelect.value = x;
-        }
-    }
 
-    const clearButton = document.getElementById('clear_table');
+document.addEventListener('DOMContentLoaded', function() {
+
+    loadRValue();
+    redrawChart();
+
+    const clearButton = document.getElementById('clear_points');
     if (clearButton) {
         clearButton.addEventListener('click', function() {
-            if (confirm('Вы уверены, что хотите очистить таблицу?')) {
+            if (confirm('Вы уверены, что хотите очистить все точки?')) {
                 clearTable();
+                clearPoints();
                 fetch('/clear', {
                     method: 'POST',
                     headers: {
@@ -126,10 +229,55 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const svgChart = document.getElementById('svg-chart');
+    if (svgChart) {
+        svgChart.addEventListener('click', function(e) {
+
+            const rValue = localStorage.getItem("r_value");
+            if (!rValue) {
+                showFormError('Выберите значение R, чтобы кликать по графику');
+                return;
+            }
+            const r = parseFloat(rValue);
+
+            clearFormError();
+
+            const clientX = e.clientX;
+            const clientY = e.clientY;
+        
+            const point = new DOMPoint(clientX, clientY);
+        
+            const ctm = svgChart.getScreenCTM();
+        
+            const svgPoint = point.matrixTransform(ctm.inverse());
+
+            const x = (svgPoint.x - 150) / 120 * r;
+            const y = (150 - svgPoint.y) / 120 * r;
+
+            fetch('/main', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `x_value=${x}&y_value=${y}&r_value=${r}`,
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                showResult(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });  
+    }
+
     // Обработчик для select R
+    const rSelect = document.getElementById('r_value');
     if (rSelect) {
         rSelect.addEventListener('change', function() {
             updateRValue(this.value);
+            redrawChart();
         });
     }
 
