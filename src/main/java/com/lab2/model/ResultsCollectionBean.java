@@ -35,6 +35,7 @@ public class ResultsCollectionBean {
             json.append("{");
             json.append("\"x\": ").append(result.getX());
             json.append(",\"y\": ").append(result.getY());
+            json.append(",\"r\": ").append(result.getR());
             json.append(",\"hit\": ").append(result.isHit());
             json.append("}");
             if (i < results.size() - 1) {

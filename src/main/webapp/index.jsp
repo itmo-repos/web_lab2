@@ -160,10 +160,10 @@
                                             <td class="result-cell">
                                                 <c:choose>
                                                     <c:when test="${result.hit}">
-                                                        <input type="checkbox" checked class="result-checkbox hit-checkbox">
+                                                        <input type="checkbox" checked tabindex="-1">
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <input type="checkbox" class="result-checkbox miss-checkbox">
+                                                        <input type="checkbox" tabindex="-1">
                                                     </c:otherwise>
                                                 </c:choose>
                                             </td>

@@ -10,11 +10,27 @@ function updateRValue(rValue) {
     }
 }
 
+
+function checkHit(x, y, r) {
+
+  if (x >= 0 && y >= 0) {
+    return x <= r/2.0 && y <= r;
+  } else if (x <= 0 && y >= 0) {
+    const maxY = (r + x) / 2.0;
+    return y <= maxY;
+  } else if (x <= 0 && y <= 0) {
+    return x**2 + y**2 <= r**2;
+  } else {
+    // Четвертая четверть
+    return false;
+  }
+}
+
 function redrawChart() {
     const svg = document.getElementById("svg-chart");
     if (svg) {
-        const rValue = localStorage.getItem("r_value");
-        if (!rValue) {
+        const rValue = parseFloat(localStorage.getItem("r_value"));
+        if (Number.isNaN(rValue)) {
             return;
         }
 
@@ -28,7 +44,7 @@ function redrawChart() {
                     point.setAttribute("cx", point_data.x/rValue*120.0 + 150);
                     point.setAttribute("cy", 150 - point_data.y/rValue*120.0);
                     point.setAttribute("r", "2");
-                    point.setAttribute("class", point_data.hit ? "point-hit" : "point-miss");
+                    point.setAttribute("class", checkHit(point_data.x, point_data.y, parseFloat(rValue)) ? "point-hit" : "point-miss");
                     svg.appendChild(point);
                 });
             })
@@ -78,7 +94,7 @@ function addResultRow(date, executionTime, hit, x, y, r) {
         row.innerHTML = `
             <td>${date}</td>
             <td>${executionTime.toFixed(2)} мкс</td>
-            <td><input type="checkbox" ${hit ? 'checked' : ''} readonly></td>
+            <td><input type="checkbox" ${hit ? 'checked' : ''} tabindex="-1"></td>
             <td>${x}</td>
             <td>${parseFloat(y).toFixed(2)}</td>
             <td>${r}</td>
